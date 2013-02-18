@@ -1,9 +1,4 @@
-
-//import gmpheadertest;
-import std.c.stdlib;
 import std.stdio;
-import std.string;
-import std.conv;
 import bignum;
 import gmp;
 import polynomial;
