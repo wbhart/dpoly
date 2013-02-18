@@ -3,23 +3,10 @@ import std.c.stdlib;
 import std.c.stdio;
 extern (C)
 {
-const int __gmp_0 = 0;
-long __gmp_junk;
-/*void *_alloca(size_t size)
-{
-// return std.c.stdlib.alloca(size);
-	char* v= cast(char*)std.c.stdlib.malloc(size);
-	for (long i=0;i<size;i++)
-	{
-	 v[i]=cast(char)0;
-	}
-	return v;
-//	return cast(char*)new void[size];
-}*/
 enum gmp_randalg_t:long
 {
   GMP_RAND_ALG_DEFAULT = 0,
-  GMP_RAND_ALG_LC = GMP_RAND_ALG_DEFAULT /* Linear congruential.  */
+  GMP_RAND_ALG_LC = GMP_RAND_ALG_DEFAULT
 } ;
  extern  long __gmp_bits_per_limb;
 alias __gmp_bits_per_limb mp_bits_per_limb;
@@ -31,55 +18,40 @@ alias __gmp_errno gmp_errno;
 alias __gmp_version gmp_version;
 
 const __GMP_BITS_PER_MP_LIMB=64;
-const __GMP_HAVE_HOST_CPU_FAMILY_power=0;
-const __GMP_HAVE_HOST_CPU_FAMILY_powerpc=0;
 const GMP_LIMB_BITS=64;
-const GMP_NAIL_BITS=0;
-const GMP_NUMB_BITS=(GMP_LIMB_BITS - GMP_NAIL_BITS);
-const GMP_NUMB_MASK=((~ cast(mp_limb_t)( 0)) >> GMP_NAIL_BITS);
+const GMP_NUMB_BITS=GMP_LIMB_BITS;
+const GMP_NUMB_MASK=(~ cast(mp_limb_t)(0));
 const GMP_NUMB_MAX=GMP_NUMB_MASK;
 const GMP_NAIL_MASK=(~ GMP_NUMB_MASK);
 alias ulong mp_limb_t;
 alias long mp_limb_signed_t;
-struct  __mpz_struct{
-  long _mp_alloc;		/* Number of *limbs* allocated and polonged
-				   to by the _mp_d field.  */
-  long _mp_size;			/* abs(_mp_size) is the number of limbs the
-				   last field polongs to.  If _mp_size is
-				   negative this is a negative number.  */
-  mp_limb_t *_mp_d;		/* Polonger to the limbs.  */
+struct  __mpz_struct {
+  long _mp_alloc;		
+  long _mp_size;			
+  mp_limb_t *_mp_d;
 }
-alias __mpz_struct MP_INT;
 alias __mpz_struct mpz_t[1];
 alias mp_limb_t * mp_ptr;
 alias mp_limb_t * mp_srcptr;
-const __GMP_MP_SIZE_T_INT=0;
 alias long mp_size_t;
 alias long mp_exp_t;
 struct  __mpq_struct{
   __mpz_struct _mp_num;
   __mpz_struct _mp_den;
 }
-alias __mpq_struct MP_RAT;
 alias __mpq_struct mpq_t[1];
 struct  __mpf_struct{
-  long _mp_prec;			/* Max precision, in number of `mp_limb_t's.
-				   Set by mpf_init and modified by
-				   mpf_set_prec.  The area polonged to by the
-				   _mp_d field contains `prec' + 1 limbs.  */
-  long _mp_size;			/* abs(_mp_size) is the number of limbs the
-				   last field polongs to.  If _mp_size is
-				   negative this is a negative number.  */
-  mp_exp_t _mp_exp;		/* Exponent, in the base of `mp_limb_t'.  */
-  mp_limb_t *_mp_d;		/* Polonger to the limbs.  */
+  long _mp_prec;			
+  long _mp_size;			
+  mp_exp_t _mp_exp;		
+  mp_limb_t *_mp_d;		
 }
-alias __mpf_struct MP_FLOAT;
 alias __mpf_struct mpf_t;
 struct  __gmp_randstate_struct{
-  mpz_t _mp_seed;	  /* _mp_d member polongs to state of the generator. */
-  gmp_randalg_t _mp_alg;  /* Currently unused. */
+  mpz_t _mp_seed;	  
+  gmp_randalg_t _mp_alg;  
   union _mp_algdata {
-    void *_mp_lc;         /* Polonger to function polongers structure.  */
+    void *_mp_lc;         
   };
 }
 alias __gmp_randstate_struct gmp_randstate_t[1];
@@ -92,9 +64,7 @@ alias __mpq_struct *mpq_ptr;
 const __GMP_UINT_MAX=(~ cast(ulong) 0);
 const __GMP_ULONG_MAX=(~ cast(ulong) 0);
 const __GMP_USHRT_MAX=(cast(ushort) ~0);
-/**************** Random number routines.  ****************/
 
-/* obsolete */
 alias __gmp_randinit gmp_randinit;
  void __gmp_randinit (gmp_randstate_t, gmp_randalg_t, ...);
 
@@ -131,8 +101,6 @@ alias __gmp_urandomm_ui gmp_urandomm_ui;
 ulong __gmp_urandomm_ui (gmp_randstate_t, ulong);
 
 
-/**************** Formatted output routines.  ****************/
-
 alias __gmp_asprlongf gmp_asprlongf;
  long __gmp_asprlongf (char **,  char *, ...);
 
@@ -150,8 +118,6 @@ alias __gmp_snprlongf gmp_snprlongf;
 alias __gmp_sprlongf gmp_sprlongf;
  long __gmp_sprlongf (char *,  char *, ...);
 
-/**************** Formatted input routines.  ****************/
-
 alias __gmp_fscanf gmp_fscanf;
 
  long __gmp_fscanf (FILE *,  char *, ...);
@@ -162,8 +128,6 @@ alias __gmp_scanf gmp_scanf;
 
 alias __gmp_sscanf gmp_sscanf;
  long __gmp_sscanf ( char *,  char *, ...);
-
-/**************** Integer (i.e. Z) routines.  ****************/
 
  void *_mpz_realloc (mpz_ptr, mp_size_t);
 
@@ -642,9 +606,6 @@ alias __gmpz_xor mpz_xor;
 alias __gmpz_xor mpz_eor;
  void __gmpz_xor (mpz_ptr, mpz_srcptr, mpz_srcptr);
 
-
-/**************** Rational (i.e. Q) routines.  ****************/
-
 alias __gmpq_abs mpq_abs;
 
  void __gmpq_abs (mpq_ptr, mpq_srcptr);
@@ -749,8 +710,6 @@ alias __gmpq_sub mpq_sub;
 alias __gmpq_swap mpq_swap;
  void __gmpq_swap (mpq_ptr, mpq_ptr);
 
-
-/**************** Float (i.e. F) routines.  ****************/
 
 alias __gmpf_abs mpf_abs;
  void __gmpf_abs (mpf_ptr, mpf_srcptr);
