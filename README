@@ -1,0 +1,18 @@
+This is a simple multivariate polynomial benchmark for the D programming language.
+
+To compile it use the command:
+
+ldc2 -O2 polytest.d bignum.d polynomial.d /usr/local/lib/libgmp.a
+
+assuming GMP is installed in /usr/local. It also compiles with dmd -O, but not with gdc.
+
+There is a series of blog posts about this code here:
+
+http://mathprogrammer.com/blog/
+
+The file gmp.d is adapted from the one found here:
+
+https://github.com/zergtmn/d-bindings/tree/master/gmp
+
+The remaining code I hereby release into the public domain.
+
