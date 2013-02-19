@@ -34,7 +34,23 @@ class poly(T, string X)
       static if (__traits(hasMember, S, "coeff"))
       {
          static if(is(typeof(p.coeff) == T[]))
-            return p;
+         {
+            auto r = new poly!(T, X);
+            r.coeff.length = p.coeff.length;
+            static if (is(T == ZZ))
+            {
+               for (size_t i = 0; i < p.coeff.length; i++)
+               {
+                  r.coeff[i] = new ZZ();
+                  r.coeff[i] = p.coeff[i] + 0;
+               }
+            } else
+            {
+               for (size_t i = 0; i < p.coeff.length; i++)
+                  r.coeff[i] = T(p.coeff[i]);
+            }
+            return r;
+         }
          else
          {
             auto c = T(p);
@@ -62,15 +78,24 @@ class poly(T, string X)
          auto r = new poly!(T, X)();
 
          r.coeff.length = max(coeff.length, b.coeff.length);
-      
+
          for (i = 0; i < min(coeff.length, b.coeff.length); i++)
+         {
+            r.coeff[i] = new T();
             r.coeff[i] = coeff[i] + b.coeff[i];
+         }
 
          for ( ; i < coeff.length; i++)
+         {
+            r.coeff[i] = new T();
             r.coeff[i] = coeff[i];
+         }
 
          for ( ; i < b.coeff.length; i++)
+         {
+            r.coeff[i] = new T();
             r.coeff[i] = b.coeff[i];
+         }
 
          r.normalise();
  
@@ -79,6 +104,43 @@ class poly(T, string X)
       {
          auto t = poly!(T, X)(b);
          return this + t;
+      }
+   }
+
+   poly!(T, X) opAddAssign(S)(S b)
+   {
+      static if (is(S == poly!(T, X)))
+      {
+         size_t i;
+         size_t len = coeff.length;
+
+         if (len < b.coeff.length)
+         {
+             coeff.length = b.coeff.length;
+             for (i = len; i < b.coeff.length; i++)
+                coeff[i] = new T();
+         }
+
+         static if (is(T == ZZ))
+         {
+            for (i = 0; i < len; i++)
+               coeff[i] = coeff[i] + b.coeff[i];
+         } else
+         {
+            for (i = 0; i < len; i++)
+               coeff[i] += b.coeff[i];
+         }
+ 
+         for ( ; i < coeff.length; i++)
+            coeff[i] = b.coeff[i];
+
+         this.normalise();
+ 
+         return this;
+      } else
+      {
+         auto t = poly!(T, X)(b);
+         return (this += t);
       }
    }
 
