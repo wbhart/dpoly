@@ -26,8 +26,8 @@ const GMP_NAIL_MASK=(~ GMP_NUMB_MASK);
 alias ulong mp_limb_t;
 alias long mp_limb_signed_t;
 struct  __mpz_struct {
-  long _mp_alloc;		
-  long _mp_size;			
+  int _mp_alloc;		
+  int _mp_size;			
   mp_limb_t *_mp_d;
 }
 alias __mpz_struct mpz_t[1];
