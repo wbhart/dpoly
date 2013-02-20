@@ -21,14 +21,11 @@ struct _bin_exp(S, T, Op)
    this(S v1, T v2) { val1 = v1; val2 = v2; }
 }
 
-template opOp(string T, string opFn, string Op)
+template opOp(string T, string Op)
 {
    const char[] opOp = 
-   "auto " ~ opFn ~ "(S)(S a)
-   {
-      auto t = _bin_exp!(" ~ T ~ ", S, " ~ Op ~ ")(this, a);
-      return _exp!(_bin_exp!(" ~ T ~ ", S, " ~ Op ~ "))(t); 
-   }";
+   "auto t = _bin_exp!(" ~ T ~ ", S, " ~ Op ~ ")(this, a);
+   return _exp!(_bin_exp!(" ~ T ~ ", S, " ~ Op ~ "))(t);";
 }
 
 struct _exp(T)
@@ -39,9 +36,12 @@ struct _exp(T)
 
    auto _get() { return expr._get(); }
 
-   mixin(opOp!("_exp!(T)", "opMul", "_mul_op"));
-   mixin(opOp!("_exp!(T)", "opAdd", "_add_op"));
-   mixin(opOp!("_exp!(T)", "opSub", "_sub_op"));
+   auto opBinary(string op, S)(S a)
+   {
+      static if (op == "*") { mixin(opOp!("_exp!(T)", "_mul_op")); }
+      else static if (op == "+") { mixin(opOp!("_exp!(T)", "_add_op")); }
+      else static if (op == "-") { mixin(opOp!("_exp!(T)", "_sub_op")); }
+   }
 }
 
 static void evalfn_ui(alias f, S)(ZZ a, ZZ b, S c)
@@ -102,9 +102,12 @@ class ZZ
 
    auto _get() { return this; }
 
-   mixin(opOp!("ZZ", "opMul", "_mul_op"));
-   mixin(opOp!("ZZ", "opAdd", "_add_op"));
-   mixin(opOp!("ZZ", "opSub", "_sub_op"));
+   auto opBinary(string op, S)(S a)
+   {
+      static if (op == "*") { mixin(opOp!("ZZ", "_mul_op")); }
+      else static if (op == "+") { mixin(opOp!("ZZ", "_add_op")); }
+      else static if (op == "-") { mixin(opOp!("ZZ", "_sub_op")); }
+   }
 
    auto opAssign(ZZ, T, Op)(_exp!(_bin_exp!(ZZ, T, Op)) ex)
    {
